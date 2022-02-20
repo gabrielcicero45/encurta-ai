@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 
 import {useState,useEffect} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
-import {ref, onValue,off, remove, set }from 'firebase/database';
+import {ref, onValue }from 'firebase/database';
 import {database} from '../../services/firebase';
 import LinkItem from '../../components/LinkItem';
 
