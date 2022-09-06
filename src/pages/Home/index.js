@@ -1,42 +1,31 @@
-import {FiLink} from 'react-icons/fi'
-import  './home.css'
+import {useState} from 'react';
+import {FiLink} from 'react-icons/fi';
+import './home.css';
+import Menu from '../../components/Menu';
+import LinkItem from '../../components/LinkItem';
 
-import Menu from '../../components/Menu'
-import LinkItem from '../../components/LinkItem'
-
-import {useState} from 'react'
-
-import api from '../../services/api'
-
-
-import {useAuth0} from '@auth0/auth0-react';
-import { ref, set,push } from "firebase/database";
-import { database } from '../../services/firebase'
+import api from '../../services/api';
+import { saveLink } from '../../services/storeLink'
 
 export default function Home(){
-    const {user} = useAuth0()
-    const db = database;
-    const [link, setLink] = useState('');
-    const [showModal,setShowModal] = useState(false);
-    const [data,setData] = useState({})
-    
-    async function handleEncurtador(){
-      try{
-        const response = await api.post('/shorten',{
-          long_url: link
-        })
-        response.data['user'] = user.sub
-        setData(response.data)
-        setLink('')
-        setShowModal(true)
-        const dbRef = ref(db, 'links-encurtados/')
-        const linksAtuais =  push(dbRef)
-        set(linksAtuais, data)
-      }
-      catch{
-        alert("Algo deu errado ! Por favor, verifique se digitou sua URL corretamente")
-        setLink('')
-      }
+
+    const [link, setLink]=useState('');
+    const [showModal, setShowModal] =useState(false);
+    const [data, setData] = useState({});
+   async function handleEncurtador(){
+        try{
+            const response = await api.post('/shorten',{
+                long_url: link
+            })
+            setData(response.data);
+            setShowModal(true);
+            
+            saveLink('@seuLink', response.data)
+            setLink('');
+        }catch{
+            alert("Ops parece que algo deu errado!");
+            setLink('');
+        }
     }
     return(
       <div className="container-home">
@@ -63,5 +52,4 @@ export default function Home(){
         
       </div>
     )
-  }
-  
+}

@@ -4,8 +4,6 @@ import Home from './pages/Home';
 import Links from './pages/Links';
 import Error from './pages/NotFound';
 
-
-
 function RoutesApp(){
     return(
         <BrowserRouter>
