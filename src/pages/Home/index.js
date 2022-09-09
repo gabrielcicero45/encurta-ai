@@ -6,22 +6,34 @@ import LinkItem from '../../components/LinkItem';
 
 import api from '../../services/api';
 import { saveLink } from '../../services/storeLink'
+import Hashids from 'hashids'
+import { linkService } from '../../services/linkService';
+import { tokenService } from '../../services/tokenService';
 
 export default function Home(){
-
+    const hashids = new Hashids('', 7)
+    
     const [link, setLink]=useState('');
     const [showModal, setShowModal] =useState(false);
     const [data, setData] = useState({});
    async function handleEncurtador(){
         try{
-            const response = await api.post('/shorten',{
-                long_url: link
-            })
+            const id = hashids.encode(Math.floor(Math.random()*60000))
+            const shortenLink = `http://localhost:3000/${id}`
+            const response = {id:id, long_url:link, link:shortenLink, user: tokenService.get()};
+            setData(response);
+            setShowModal(true);
+            linkService.saveLink(data)
+            saveLink('@seuLink', response)
+            setLink('');
+
+            /*usando API bit.ly
+            const response = await api.post('/shorten',{long_url: link})
             setData(response.data);
             setShowModal(true);
             
             saveLink('@seuLink', response.data)
-            setLink('');
+            setLink('');*/
         }catch{
             alert("Ops parece que algo deu errado!");
             setLink('');
@@ -29,7 +41,6 @@ export default function Home(){
     }
     return(
       <div className="container-home">
-        <Menu/>
         <div className="logo">
           <img src="/logo.png" alt="Sujeito Link Logo" />
           <h1>Encurta Ai</h1>

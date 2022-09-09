@@ -4,6 +4,7 @@ import {FiArrowLeft,FiLink,FiTrash} from 'react-icons/fi';
 import {Link} from 'react-router-dom';
 import { getLinksSave, deleteLink } from '../../services/storeLink';
 import LinkItem from '../../components/LinkItem';
+import { linkService } from '../../services/linkService';
 
 export default function Links(){
     const [myLinks, setMyLinks] = useState([]);
@@ -14,10 +15,10 @@ export default function Links(){
 
     useEffect(() => {
         async function getLinks(){
+            linkService.getLinks();
             const result = await getLinksSave('@seuLink')
 
             if(result.length === 0){
-                //nossa lista esta vazia
                 setEmptyList(true);
             }
             setMyLinks(result);
@@ -39,8 +40,8 @@ export default function Links(){
 
     }
     return(
-        <div className="link-container">
-            <div className="link-header">
+        <div className="links-container">
+            <div className="links-header">
                 <Link to="/">
                     <FiArrowLeft size={38} color='#fff' />
                 </Link>
@@ -54,7 +55,7 @@ export default function Links(){
             )}
 
             {myLinks.map(link => (
-                <div key={link.id} className='link-item'>
+                <div key={link.id} className='links-item'>
                     <button className="link" onClick={() => handleOpenLink(link)}>
                         <FiLink size={18} color="#fff" />
                         {link.long_url}
